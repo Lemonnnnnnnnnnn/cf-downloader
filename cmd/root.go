@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"media-crawler/core/config"
-	"media-crawler/core/request"
+	"cf-downloader/core/config"
+	"cf-downloader/core/request"
 
 	"github.com/spf13/cobra"
 )

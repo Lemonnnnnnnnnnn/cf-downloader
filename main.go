@@ -1,7 +1,7 @@
 package main
 
 import (
-	"media-crawler/cmd"
+	"cf-downloader/cmd"
 )
 
 func main() {

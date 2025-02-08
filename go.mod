@@ -1,4 +1,4 @@
-module media-crawler
+module cf-downloader
 
 go 1.23
 
