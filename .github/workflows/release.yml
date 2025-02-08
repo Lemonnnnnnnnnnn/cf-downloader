@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            output: cf-downloader-linux
+          - os: windows-latest
+            output: cf-downloader-windows.exe
+          - os: macos-latest
+            output: cf-downloader-macos
+
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: true
+
+      - name: Build Binary
+        run: |
+          go mod tidy
+          go build -v -o ${{ matrix.output }} ./main.go
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.output }}
+          path: ${{ matrix.output }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/cf-downloader-linux/cf-downloader-linux
+            artifacts/cf-downloader-windows.exe/cf-downloader-windows.exe
+            artifacts/cf-downloader-macos/cf-downloader-macos
+        env:
+
+
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
